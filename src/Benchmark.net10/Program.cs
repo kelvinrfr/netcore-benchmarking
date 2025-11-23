@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using System.Text;
 
 const string loremIpsum = @"
@@ -112,8 +113,8 @@ Nam egestas vel est eu euismod. Integer elementum eleifend nulla, vitae tempor o
 
 Fusce ac neque sit amet erat consequat porttitor. Maecenas finibus diam ac sem facilisis pellentesque. Aliquam quis maximus velit, vel scelerisque dui. Vivamus tincidunt mi sit amet nunc pulvinar, pharetra iaculis sem blandit. Ut et nibh id massa viverra imperdiet. Proin sapien nisl, elementum ut malesuada sit amet, ullamcorper ac tellus. Pellentesque condimentum in eros in vehicula. Suspendisse suscipit tincidunt ultrices. Duis tincidunt enim et quam convallis, eu auctor lacus malesuada. Proin sed varius felis. Vestibulum congue, quam vel ornare posuere.";
 
-Console.WriteLine("Hello, World!");
-
+Console.WriteLine($"Reverting a string with length: {loremIpsum.Length:N0}!");
+var sw = Stopwatch.StartNew();
 var memory = GC.GetAllocatedBytesForCurrentThread();
 
 var result = args[0] switch
@@ -125,8 +126,9 @@ var result = args[0] switch
     _ => throw new Exception("not supported")
 };
 
+sw.Stop();
 memory = GC.GetAllocatedBytesForCurrentThread() - memory;
-Console.WriteLine($"The memory now is {memory}");
+Console.WriteLine($"Elapsed Time: {sw.Elapsed}, Allocated memory: {memory:N0} bytes");
 Console.WriteLine($"String length: {result.Length}");
 return 0;
 
@@ -138,18 +140,12 @@ string Reverse1(string value)
     {
         reversed += array[i];
     }
-    var memoryNow = GC.GetAllocatedBytesForCurrentThread() - memory;
-    Console.WriteLine($"{nameof(Reverse1)} memory: {memoryNow}");
-
     return reversed;
 }
 
 string Reverse2(string value)
 {
     var reversed = string.Concat(value.ToCharArray().Reverse());
-    var memoryNow = GC.GetAllocatedBytesForCurrentThread() - memory;
-    Console.WriteLine($"{nameof(Reverse2)} memory: {memoryNow}");
-
     return reversed;
 }
 
@@ -161,9 +157,6 @@ string Reverse3(string value)
     {
         reversed.Append(array[i]);
     }
-    var memoryNow = GC.GetAllocatedBytesForCurrentThread() - memory;
-    Console.WriteLine($"{nameof(Reverse3)} memory: {memoryNow}");
-
     return reversed.ToString();
 }
 
@@ -174,8 +167,5 @@ string Reverse4(string value)
     {
         reversed.Append(value[i]);
     }
-    var memoryNow = GC.GetAllocatedBytesForCurrentThread() - memory;
-    Console.WriteLine($"{nameof(Reverse4)} memory: {memoryNow}");
-
     return reversed.ToString();
 }
